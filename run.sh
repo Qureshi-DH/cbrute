@@ -1,0 +1,1 @@
+sudo mpiexec -n 1 ./bin/main daniyal

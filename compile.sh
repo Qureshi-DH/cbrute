@@ -1,0 +1,1 @@
+mpicxx -fopenmp ./src/main.cpp -o ./bin/main -lcrypt
