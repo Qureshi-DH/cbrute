@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <sstream>
 
 #ifndef _PRJ_UTIL
 #define _PRJ_UTIL
@@ -20,6 +21,32 @@ namespace Utility {
         }
         return list;
     }
+
+    template<class t>
+    inline void write_data(std::stringstream& buffer, const t& data) {
+        buffer.write((char*)&data, sizeof(t));
+    }
+
+    template<class t>
+    inline void read_data(std::stringstream& buffer, t& data) {
+        buffer.read((char*)&data, sizeof(t));
+    }
+
+    template<>
+    inline void write_data(std::stringstream& buffer, const std::string& str) {
+        std::size_t size = str.length();
+        buffer.write((char*)&size, sizeof(std::size_t));
+        buffer.write(&str[0], size);
+    }
+
+    template<>
+    inline void read_data(std::stringstream& buffer, std::string& str) {
+        std::size_t size;
+        buffer.read((char*)&size, sizeof(std::size_t));
+        str.resize(size);
+        buffer.read(&str[0], size);
+    }
+
 }
 
 #endif
