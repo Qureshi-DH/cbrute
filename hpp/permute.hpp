@@ -6,7 +6,7 @@
 
 #include "record.hpp"
 
-void permute(char alphabet[], std::string prefix, int k, int n, Record& record)
+void permute(char alphabet[], std::string prefix, int k, int alphabet_size, Record& record)
 {
 
     // Base case: k is 0,
@@ -23,7 +23,7 @@ void permute(char alphabet[], std::string prefix, int k, int n, Record& record)
     // One by one add all characters
     // from alphabet and recursively
     // call for k equals to k-1
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < alphabet_size; i++)
     {
 
         std::string new_prefix;
@@ -33,7 +33,7 @@ void permute(char alphabet[], std::string prefix, int k, int n, Record& record)
 
         // k is decreased, because
         // we have added a new character
-        permute(alphabet, new_prefix, k - 1, n, record);
+        permute(alphabet, new_prefix, k - 1, alphabet_size, record);
 
 
         if (record.password != Statics::empty_string) {
