@@ -26,7 +26,7 @@ int main(int argc, char* argv[], char* envp[]) {
         return 0;
     }
 
-    printAllKLength(Statics::alphabet, length, Statics::alphabet_size, record);
+    initiate_brute_force(Statics::alphabet, length, Statics::alphabet_size, record);
 
     if (record.password != Statics::empty_string) {
         std::cout << "Password: "

@@ -6,7 +6,7 @@
 
 #include "record.hpp"
 
-void printAllKLengthRec(char set[], std::string prefix, int n, int k, Record& record)
+void permute(char alphabet[], std::string prefix, int k, int n, Record& record)
 {
 
     // Base case: k is 0,
@@ -21,19 +21,19 @@ void printAllKLengthRec(char set[], std::string prefix, int n, int k, Record& re
     }
 
     // One by one add all characters
-    // from set and recursively
+    // from alphabet and recursively
     // call for k equals to k-1
     for (int i = 0; i < n; i++)
     {
 
-        std::string newPrefix;
+        std::string new_prefix;
 
         // Next character of input added
-        newPrefix = prefix + set[i];
+        new_prefix = prefix + alphabet[i];
 
         // k is decreased, because
         // we have added a new character
-        printAllKLengthRec(set, newPrefix, n, k - 1, record);
+        permute(alphabet, new_prefix, k - 1, n, record);
 
 
         if (record.password != Statics::empty_string) {
@@ -43,7 +43,7 @@ void printAllKLengthRec(char set[], std::string prefix, int n, int k, Record& re
 
 }
 
-void printAllKLength(char set[], int k, int n, Record& record)
+void initiate_brute_force(char alphabet[], int length, int alphabet_size, Record& record)
 {
-    printAllKLengthRec(set, "", n, k, record);
+    permute(alphabet, std::string(""), length, alphabet_size, record);
 }
