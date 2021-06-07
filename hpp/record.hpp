@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <regex>
+#include <sstream>
 
 #include "./statics.hpp"
 #include "./util.hpp"
@@ -53,6 +54,26 @@ public:
 
         shadow_file.close();
         return false;
+    }
+
+    std::stringstream serialize() {
+        std::stringstream buffer;
+
+        Utility::write_data(buffer, this->enc_type);
+        Utility::write_data(buffer, this->hash);
+        Utility::write_data(buffer, this->name);
+        Utility::write_data(buffer, this->salt);
+        Utility::write_data(buffer, this->salt_str);
+
+        return buffer;
+    }
+
+    void deserialize(std::stringstream& buffer) {
+        Utility::read_data(buffer, this->enc_type);
+        Utility::read_data(buffer, this->hash);
+        Utility::read_data(buffer, this->name);
+        Utility::read_data(buffer, this->salt);
+        Utility::read_data(buffer, this->salt_str);
     }
 };
 
