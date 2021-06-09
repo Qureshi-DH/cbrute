@@ -3,14 +3,19 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <crypt.h>
+#include <mpi.h>
 
 #include "record.hpp"
+#include "node.hpp"
 
-void permute(char alphabet[], std::string prefix, int k, int alphabet_size, Record& record)
+void permute(char alphabet[], std::string prefix, int k, int alphabet_size, Record& record, MPI_Request& receive_request,
+    MPI_Status& receive_status,
+    int& flag, Node& node)
 {
 
     // Base case: k is 0,
     // print prefix
+
     if (k == 0)
     {
         std::string hashed = crypt(prefix.c_str(), record.salt_str.c_str());
@@ -26,24 +31,36 @@ void permute(char alphabet[], std::string prefix, int k, int alphabet_size, Reco
     for (int i = 0; i < alphabet_size; i++)
     {
 
+        MPI_Test(&receive_request, &flag, &receive_status);
+        if (record.password != Statics::empty_string || flag) {
+            return;
+        }
+
         std::string new_prefix;
 
         // Next character of input added
         new_prefix = prefix + alphabet[i];
 
+        if (new_prefix.length() == 1) {
+            node.progress = (int)(((float)(i + 1) / alphabet_size) * 100);
+            node.log_status(true);
+        }
+
+
         // k is decreased, because
         // we have added a new character
-        permute(alphabet, new_prefix, k - 1, alphabet_size, record);
+        permute(alphabet, new_prefix, k - 1, alphabet_size, record, receive_request, receive_status, flag, node);
 
 
-        if (record.password != Statics::empty_string) {
-            break;
-        }
+
     }
 
 }
 
-void initiate_brute_force(char alphabet[], int length, int alphabet_size, Record& record)
+void initiate_brute_force(char alphabet[], int length, int alphabet_size, Record& record, MPI_Request& receive_request,
+    MPI_Status& receive_status,
+    int& flag,
+    Node& node)
 {
-    permute(alphabet, std::string(""), length, alphabet_size, record);
+    permute(alphabet, std::string(""), length, alphabet_size, record, receive_request, receive_status, flag, node);
 }
