@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <cstring>
 
 #ifndef _PRJ_UTIL
 #define _PRJ_UTIL
@@ -28,7 +29,7 @@ namespace Utility {
     }
 
     template<class t>
-    inline void read_data(std::stringstream& buffer, t& data) {
+    inline void read_data(std::istringstream& buffer, t& data) {
         buffer.read((char*)&data, sizeof(t));
     }
 
@@ -40,7 +41,7 @@ namespace Utility {
     }
 
     template<>
-    inline void read_data(std::stringstream& buffer, std::string& str) {
+    inline void read_data(std::istringstream& buffer, std::string& str) {
         std::size_t size;
         buffer.read((char*)&size, sizeof(std::size_t));
         str.resize(size);
