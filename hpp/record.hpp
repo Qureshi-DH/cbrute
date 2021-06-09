@@ -56,24 +56,28 @@ public:
         return false;
     }
 
-    std::stringstream serialize() {
-        std::stringstream buffer;
+    std::string serialize() {
+        std::stringstream buffer_stream;
 
-        Utility::write_data(buffer, this->enc_type);
-        Utility::write_data(buffer, this->hash);
-        Utility::write_data(buffer, this->name);
-        Utility::write_data(buffer, this->salt);
-        Utility::write_data(buffer, this->salt_str);
+        Utility::write_data(buffer_stream, this->enc_type);
+        Utility::write_data(buffer_stream, this->hash);
+        Utility::write_data(buffer_stream, this->name);
+        Utility::write_data(buffer_stream, this->salt);
+        Utility::write_data(buffer_stream, this->salt_str);
 
-        return buffer;
+        return buffer_stream.str();
     }
 
-    void deserialize(std::stringstream& buffer) {
-        Utility::read_data(buffer, this->enc_type);
-        Utility::read_data(buffer, this->hash);
-        Utility::read_data(buffer, this->name);
-        Utility::read_data(buffer, this->salt);
-        Utility::read_data(buffer, this->salt_str);
+    void deserialize(const char buffer[]) {
+        std::istringstream buffer_stream(std::string(buffer, Statics::buffer_size));
+
+        // buffer_stream.write(buffer.c_str(), Statics::buffer_size);
+
+        Utility::read_data(buffer_stream, this->enc_type);
+        Utility::read_data(buffer_stream, this->hash);
+        Utility::read_data(buffer_stream, this->name);
+        Utility::read_data(buffer_stream, this->salt);
+        Utility::read_data(buffer_stream, this->salt_str);
     }
 };
 
