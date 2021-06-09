@@ -20,6 +20,8 @@ namespace Statics {
     constexpr char* alphabet = (char*)"abcdefghijklmnopqrstuvwxyz";
 #endif
 
+    constexpr int buffer_size = 1024;
+
     constexpr unsigned char min_password_length = 1;
     constexpr unsigned char max_password_length = 8;
 
