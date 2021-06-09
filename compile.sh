@@ -1,1 +1,1 @@
-mpicxx -fopenmp ./src/main.cpp -o ./bin/main -lcrypt
+mpicxx -fopenmp  -std=c++11 ./src/main.cpp -o ./bin/main -lcrypt

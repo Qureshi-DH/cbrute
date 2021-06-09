@@ -1,1 +1,1 @@
-sudo mpiexec -n 1 ./bin/main daniyal
+sudo mpiexec -n 9 ./bin/main daniyal
