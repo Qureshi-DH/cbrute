@@ -12,6 +12,14 @@ namespace Statics {
         SHA512 = 6
     };
 
+    enum NODE_STATUS {
+        UNDEFINED = 0,
+        INITIALZED = 1,
+        SEARCHING = 2,
+        COMPLETED = 3,
+        TERMINATED = 4
+    };
+
 #ifdef DEV
     constexpr unsigned char alphabet_size = 10;
     constexpr char* alphabet = (char*)"1234567890";
