@@ -97,14 +97,15 @@ int main(int argc, char* argv[], char* envp[]) {
             int flag;
             MPI_Irecv(nullptr, 0, MPI_CHAR, 0, 4, MPI_COMM_WORLD, &receive_request);
 
+#pragma omp for 
             for (int pwd_length = recv_unit[0]; pwd_length <= recv_unit[1]; ++pwd_length)
                 initiate_brute_force(Statics::alphabet, pwd_length, Statics::alphabet_size, record, receive_request, receive_status, flag, node);
 
             if (record.password != Statics::empty_string) {
-                MPI_Send(nullptr, 0, MPI_INT, 0, 3, MPI_COMM_WORLD);
+                MPI_Send(record.password.c_str(), record.password.length(), MPI_CHAR, 0, 3, MPI_COMM_WORLD);
             }
             else {
-                MPI_Send(nullptr, 0, MPI_INT, 0, 4, MPI_COMM_WORLD);
+                MPI_Send(nullptr, 0, MPI_CHAR, 0, 4, MPI_COMM_WORLD);
             }
         }
 
@@ -115,8 +116,10 @@ int main(int argc, char* argv[], char* envp[]) {
         // Await Confirmation
         MPI_Status status;
         unsigned affirmations_received;
+        char password[Statics::max_password_length + 1];
+
         while (status.MPI_TAG != 3 || affirmations_received < number_of_processes - 1) {
-            MPI_Recv(nullptr, 0, MPI_BYTE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+            MPI_Recv(password, Statics::max_password_length + 1, MPI_CHAR, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
             ++affirmations_received;
         }
 
@@ -126,11 +129,9 @@ int main(int argc, char* argv[], char* envp[]) {
                 MPI_Send(nullptr, 0, MPI_INT, i, 4, MPI_COMM_WORLD);
         }
 
-
-
         if (status.MPI_TAG == 3) {
             std::cout << "Password: "
-                << record.password
+                << password
                 << " cracked in "
                 << (time(NULL) - start_time)
                 << " seconds."
