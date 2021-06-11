@@ -24,6 +24,13 @@ namespace Utility {
     }
 
     template<class t>
+    std::string to_string(const t& data) {
+        std::stringstream data_stream;
+        data_stream << data;
+        return data_stream.str();
+    }
+
+    template<class t>
     inline void write_data(std::stringstream& buffer, const t& data) {
         buffer.write((char*)&data, sizeof(t));
     }
