@@ -13,12 +13,14 @@
 class Node {
 public:
     unsigned rank;
-    unsigned length;
+    unsigned start_length;
+    unsigned end_length;
     unsigned progress;
     Statics::NODE_STATUS status;
 
     Node() : rank(0),
-        length(0),
+        start_length(0),
+        end_length(0),
         progress(0),
         status(Statics::NODE_STATUS::UNDEFINED) {}
 
@@ -29,10 +31,13 @@ public:
     }
 
     void log_status(bool lf_cr = false) {
+        bool diff_length = (start_length != end_length);
         std::cout << "Rank: "
             << this->rank
             << " | Length to crack: "
-            << this->length
+            << this->start_length
+            << (diff_length ? " - " : "")
+            << (diff_length ? Utility::to_string(this->end_length) : "")
             << " | Progress: "
             << this->progress
             << "% | Status Code: "
