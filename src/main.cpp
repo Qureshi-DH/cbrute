@@ -4,6 +4,7 @@
 #include <mpi.h>
 #include <cstring>
 #include <cstdio>
+#include <cmath>
 
 #define DEV
 
@@ -28,6 +29,12 @@ int main(int argc, char* argv[], char* envp[]) {
     node.update_status(my_rank, 0, Statics::NODE_STATUS::INITIALZED);
 
     if (!my_rank) {
+
+        if (number_of_processes == 1) {
+            std::cout << "Requires atleast 1 slave process. Terminating..." << std::endl;
+            std::exit(0);
+        }
+
         if (argc <= 1) {
             std::cout << "Missing Username. Terminating..." << std::endl;
             std::exit(0);
@@ -46,13 +53,26 @@ int main(int argc, char* argv[], char* envp[]) {
             MPI_Send(serialized.c_str(), serialized.length(), MPI_BYTE, i, 1, MPI_COMM_WORLD);
         }
 
-        // Send the length to start bruteforce
-        for (int i = 1, length = Statics::min_password_length; i < number_of_processes && length <= Statics::max_password_length; ++i, ++length)
+        // Send the pwd length to start bruteforce
+        int i = 1,
+            send_unit[2],
+            length = Statics::min_password_length,
+            distribution_unit = ceil((double)(Statics::max_password_length - Statics::min_password_length + 1) / (number_of_processes - 1));
+
+        for (; i < number_of_processes && length <= Statics::max_password_length; ++i, length += distribution_unit)
         {
-            MPI_Send((void*)&length, 1, MPI_INT, i, 2, MPI_COMM_WORLD);
+            send_unit[0] = length;
+            send_unit[1] = length + distribution_unit - 1;
+
+            // take care of one corner case when distribution unit causes the pwd_length to exceed max_pass_length
+            send_unit[1] = ((send_unit[1] <= Statics::max_password_length) ? send_unit[1] : Statics::max_password_length);
+            MPI_Send((void*)&send_unit, 2, MPI_INT, i, 2, MPI_COMM_WORLD);
         }
 
-
+        while (i < number_of_processes) {
+            send_unit[0] = send_unit[1] = 0;
+            MPI_Send((void*)&send_unit, 2, MPI_INT, i++, 2, MPI_COMM_WORLD);
+        }
 
     }
 
@@ -65,22 +85,27 @@ int main(int argc, char* argv[], char* envp[]) {
 
         record.deserialize(buffer);
 
-        int pwd_length;
-        MPI_Recv(&pwd_length, 1, MPI_INT, 0, 2, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        node.length = pwd_length;
+        int recv_unit[2];
+        MPI_Recv(&recv_unit, 2, MPI_INT, 0, 2, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        if (recv_unit[0] && recv_unit[1]) {
 
-        MPI_Request receive_request;
-        MPI_Status receive_status;
-        int flag;
-        MPI_Irecv(nullptr, 0, MPI_CHAR, 0, 4, MPI_COMM_WORLD, &receive_request);
+            node.start_length = recv_unit[0];
+            node.end_length = recv_unit[1];
 
-        initiate_brute_force(Statics::alphabet, pwd_length, Statics::alphabet_size, record, receive_request, receive_status, flag, node);
+            MPI_Request receive_request;
+            MPI_Status receive_status;
+            int flag;
+            MPI_Irecv(nullptr, 0, MPI_CHAR, 0, 4, MPI_COMM_WORLD, &receive_request);
 
-        if (record.password != Statics::empty_string) {
-            MPI_Send(nullptr, 0, MPI_INT, 0, 3, MPI_COMM_WORLD);
-        }
-        else {
-            MPI_Send(nullptr, 0, MPI_INT, 0, 4, MPI_COMM_WORLD);
+            for (int pwd_length = recv_unit[0]; pwd_length <= recv_unit[1]; ++pwd_length)
+                initiate_brute_force(Statics::alphabet, pwd_length, Statics::alphabet_size, record, receive_request, receive_status, flag, node);
+
+            if (record.password != Statics::empty_string) {
+                MPI_Send(nullptr, 0, MPI_INT, 0, 3, MPI_COMM_WORLD);
+            }
+            else {
+                MPI_Send(nullptr, 0, MPI_INT, 0, 4, MPI_COMM_WORLD);
+            }
         }
 
 
