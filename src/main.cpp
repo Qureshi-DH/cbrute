@@ -13,8 +13,6 @@
 #include "../hpp/statics.hpp"
 #include "../hpp/node.hpp"
 
-Node node;
-
 int main(int argc, char* argv[], char* envp[]) {
 
     Record record;
@@ -25,8 +23,6 @@ int main(int argc, char* argv[], char* envp[]) {
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &number_of_processes);
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
-
-    node.update_status(my_rank, 0, Statics::NODE_STATUS::INITIALZED);
 
     if (!my_rank) {
 
@@ -89,9 +85,6 @@ int main(int argc, char* argv[], char* envp[]) {
         MPI_Recv(&recv_unit, 2, MPI_INT, 0, 2, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         if (recv_unit[0] && recv_unit[1]) {
 
-            node.start_length = recv_unit[0];
-            node.end_length = recv_unit[1];
-
             MPI_Request receive_request;
             MPI_Status receive_status;
             int flag;
@@ -99,7 +92,7 @@ int main(int argc, char* argv[], char* envp[]) {
 
 #pragma omp for 
             for (int pwd_length = recv_unit[0]; pwd_length <= recv_unit[1]; ++pwd_length)
-                initiate_brute_force(Statics::alphabet, pwd_length, Statics::alphabet_size, record, receive_request, receive_status, flag, node);
+                initiate_brute_force(Statics::alphabet, pwd_length, Statics::alphabet_size, record, receive_request, receive_status, flag, my_rank);
 
             if (record.password != Statics::empty_string) {
                 MPI_Send(record.password.c_str(), record.password.length(), MPI_CHAR, 0, 3, MPI_COMM_WORLD);

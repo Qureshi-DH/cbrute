@@ -10,7 +10,7 @@
 
 void permute(char alphabet[], std::string prefix, int k, int alphabet_size, Record& record, MPI_Request& receive_request,
     MPI_Status& receive_status,
-    int& flag, Node& node)
+    int& flag, int& rank)
 {
 
     // Base case: k is 0,
@@ -42,14 +42,14 @@ void permute(char alphabet[], std::string prefix, int k, int alphabet_size, Reco
         new_prefix = prefix + alphabet[i];
 
         if (new_prefix.length() == 1) {
-            node.progress = (int)(((float)(i + 1) / alphabet_size) * 100);
-            node.log_status(true);
+            int progress = progress = (int)(((float)(i + 1) / alphabet_size) * 100);
+            Utility::log_progress(rank, k + 1, progress);
         }
 
 
         // k is decreased, because
         // we have added a new character
-        permute(alphabet, new_prefix, k - 1, alphabet_size, record, receive_request, receive_status, flag, node);
+        permute(alphabet, new_prefix, k - 1, alphabet_size, record, receive_request, receive_status, flag, rank);
 
 
 
@@ -60,7 +60,7 @@ void permute(char alphabet[], std::string prefix, int k, int alphabet_size, Reco
 void initiate_brute_force(char alphabet[], int length, int alphabet_size, Record& record, MPI_Request& receive_request,
     MPI_Status& receive_status,
     int& flag,
-    Node& node)
+    int& rank)
 {
-    permute(alphabet, std::string(""), length, alphabet_size, record, receive_request, receive_status, flag, node);
+    permute(alphabet, std::string(""), length, alphabet_size, record, receive_request, receive_status, flag, rank);
 }

@@ -30,7 +30,7 @@ public:
         this->status = status;
     }
 
-    void log_status(bool lf_cr = false) {
+    void log_status(bool lf_cr = false, int progress = -1) {
         bool diff_length = (start_length != end_length);
         std::cout << "Rank: "
             << this->rank
@@ -39,7 +39,7 @@ public:
             << (diff_length ? " - " : "")
             << (diff_length ? Utility::to_string(this->end_length) : "")
             << " | Progress: "
-            << this->progress
+            << (progress == -1 ? this->progress : progress)
             << "% | Status Code: "
             << this->status
             << (lf_cr ? "\n" : "");

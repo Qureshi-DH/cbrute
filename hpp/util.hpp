@@ -23,6 +23,16 @@ namespace Utility {
         return list;
     }
 
+    void log_progress(const int& rank, const int& length, const int& progress) {
+        std::cout << "Rank: "
+            << rank
+            << " | Length to crack: "
+            << length
+            << " | Progress: "
+            << (progress == -1 ? progress : progress)
+            << "%" << std::endl;
+    }
+
     template<class t>
     std::string to_string(const t& data) {
         std::stringstream data_stream;
