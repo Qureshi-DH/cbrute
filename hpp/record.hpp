@@ -71,8 +71,6 @@ public:
     void deserialize(const char buffer[]) {
         std::istringstream buffer_stream(std::string(buffer, Statics::buffer_size));
 
-        // buffer_stream.write(buffer.c_str(), Statics::buffer_size);
-
         Utility::read_data(buffer_stream, this->enc_type);
         Utility::read_data(buffer_stream, this->hash);
         Utility::read_data(buffer_stream, this->name);
