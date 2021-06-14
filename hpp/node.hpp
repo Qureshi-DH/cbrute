@@ -10,6 +10,7 @@
 #ifndef _PRJ_NODE
 #define _PRJ_NODE
 
+// deprecated class --- not being used
 class Node {
 public:
     unsigned rank;
