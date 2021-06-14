@@ -8,6 +8,7 @@
 
 namespace Utility {
 
+    // python string split implemnetion 
     std::vector<std::string>* split(const std::string& string, char split_char) {
         std::vector<std::string>* list = new std::vector<std::string>;
         unsigned prev = 0;
@@ -23,6 +24,7 @@ namespace Utility {
         return list;
     }
 
+    // standard progress logging function
     void log_progress(const int& rank, const int& length, const int& progress) {
         std::cout << "Rank: "
             << rank
@@ -33,12 +35,17 @@ namespace Utility {
             << "%" << std::endl;
     }
 
+    // coverts anything to string using c++ basic stream
     template<class t>
     std::string to_string(const t& data) {
         std::stringstream data_stream;
         data_stream << data;
         return data_stream.str();
     }
+
+    // -----------------------------------------------------------
+    // -----------N E T W O R K   S E R I A L I Z E R S-----------
+    // -----------------------------------------------------------
 
     template<class t>
     inline void write_data(std::stringstream& buffer, const t& data) {
