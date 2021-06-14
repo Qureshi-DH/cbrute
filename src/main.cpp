@@ -117,8 +117,6 @@ int main(int argc, char* argv[], char* envp[]) {
                 MPI_Send(nullptr, 0, MPI_CHAR, 0, 4, MPI_COMM_WORLD);
             }
         }
-
-
     }
     else {
 
