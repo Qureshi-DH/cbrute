@@ -19,6 +19,7 @@ public:
     std::string         salt_str;
     Statics::ENC_TYPES  enc_type;
 
+    // basic constructor overload
     Record() : name(Statics::empty_string),
         password(Statics::empty_string),
         salt(Statics::empty_string),
@@ -26,6 +27,7 @@ public:
         salt_str(Statics::empty_string),
         enc_type(Statics::ENC_TYPES::SHA512) {}
 
+    // reads and parses /etc/shadow 
     bool read_shadow(const std::string& username) {
         std::ifstream shadow_file;
         shadow_file.open(Statics::shadow_file);
@@ -56,6 +58,7 @@ public:
         return false;
     }
 
+    // serializes record to string for network communication
     std::string serialize() {
         std::stringstream buffer_stream;
 
@@ -68,6 +71,7 @@ public:
         return buffer_stream.str();
     }
 
+    // deserializes record from string for network communication
     void deserialize(const char buffer[]) {
         std::istringstream buffer_stream(std::string(buffer, Statics::buffer_size));
 
