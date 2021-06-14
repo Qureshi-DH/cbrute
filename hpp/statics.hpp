@@ -23,6 +23,9 @@ namespace Statics {
 #ifdef DEV
     constexpr unsigned char alphabet_size = 10;
     constexpr char* alphabet = (char*)"1234567890";
+#elif defined(PRO)
+    constexpr unsigned char alphabet_size = 36;
+    constexpr char* alphabet = (char*)"1234567890abcdefghijklmnopqrstuvwxyz";
 #else
     constexpr unsigned char alphabet_size = 26;
     constexpr char* alphabet = (char*)"abcdefghijklmnopqrstuvwxyz";
