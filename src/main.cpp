@@ -2,6 +2,7 @@
 #include <iostream>
 #include <ctime>
 #include <mpi.h>
+#include <omp.h>
 #include <cstring>
 #include <cstdio>
 #include <cmath>
@@ -105,7 +106,6 @@ int main(int argc, char* argv[], char* envp[]) {
             MPI_Irecv(nullptr, 0, MPI_CHAR, 0, 4, MPI_COMM_WORLD, &receive_request);
 
             // run bruteforce on lengths assigned by master
-#pragma omp for 
             for (int pwd_length = recv_unit[0]; pwd_length <= recv_unit[1]; ++pwd_length)
                 BruteForce::initiate_brute_force(Statics::alphabet, pwd_length, Statics::alphabet_size, record, receive_request, receive_status, flag, my_rank);
 
