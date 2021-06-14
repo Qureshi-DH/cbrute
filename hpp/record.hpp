@@ -46,8 +46,8 @@ public:
                 this->name = (*tokens)[0];
                 this->salt = (*hash_t)[2];
                 this->hash = (*hash_t)[3];
-                this->salt_str = "$6$" + this->salt + "$";
                 this->enc_type = (Statics::ENC_TYPES)(std::atoi(((*hash_t)[1]).c_str()));
+                this->salt_str = "$" + Utility::to_string(this->enc_type) + "$" + this->salt + "$";
 
                 shadow_file.close();
                 return true;
