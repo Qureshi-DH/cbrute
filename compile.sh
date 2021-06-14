@@ -1,1 +1,1 @@
-mpicxx -fopenmp  -std=c++11 ./src/main.cpp -o ./bin/main -D"PRO" -lcrypt
+mpicxx -fopenmp  -std=c++11 ./src/main.cpp -o ./bin/main -D"DEV" -lcrypt

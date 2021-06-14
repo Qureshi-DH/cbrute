@@ -40,7 +40,7 @@ namespace BruteForce {
 
             if (new_prefix.length() == 1) {
                 int progress = progress = (int)(((float)(i + 1) / alphabet_size) * 100);
-                Utility::log_progress(rank, k + 1, progress);
+                Utility::log_progress(rank, k, progress);
             }
 
             // k count decreased after adding new character
